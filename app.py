@@ -686,7 +686,7 @@ st.set_page_config(page_title="AGAP Dashboard", layout="wide")
 st.title("✈️ Airport Gate Assignment Problem")
 st.markdown("MILP vs Simulated Annealing vs Genetic Algorithm vs Tabu Search - Generate scenario or load from CSV")
 
-st.sidebar.header("📂 Data Source")
+st.sidebar.header("Data Source")
 
 data_source = st.sidebar.radio(
     "Select data source",
@@ -707,18 +707,18 @@ if data_source == "Generate New Scenario":
     
     ratio = n_flights / n_gates
     if ratio < 2:
-        st.sidebar.warning(f"⚠️ Low flight/gate ratio ({ratio:.1f}:1). Problem may be too easy. Consider more flights.")
+        st.sidebar.warning(f"Low flight/gate ratio ({ratio:.1f}:1). Problem may be too easy. Consider more flights.")
     elif ratio > 6:
-        st.sidebar.warning(f"⚠️ High flight/gate ratio ({ratio:.1f}:1). MILP may be slow. Consider fewer flights.")
+        st.sidebar.warning(f"High flight/gate ratio ({ratio:.1f}:1). MILP may be slow. Consider fewer flights.")
     else:
-        st.sidebar.success(f"✅ Good ratio: {ratio:.1f} flights per gate")
+        st.sidebar.success(f"Good ratio: {ratio:.1f} flights per gate")
     
     if st.sidebar.button("Generate Scenario", type="primary"):
         with st.spinner("Generating scenario..."):
             scenario = generate_scenario(n_flights, n_gates, seed, t_clean)
             st.session_state['scenario'] = scenario
             st.session_state['scenario_source'] = "generated"
-            st.success(f"✅ Generated: {n_flights} flights, {n_gates} gates")
+            st.success(f"Generated: {n_flights} flights, {n_gates} gates")
             st.rerun()
 
 else:   
@@ -733,7 +733,7 @@ else:
             scenario = load_scenario_from_csv(data_path)
             st.session_state['scenario'] = scenario
             st.session_state['scenario_source'] = "loaded"
-            st.success(f"✅ Loaded: {scenario['n_flights']} flights, {scenario['n_gates']} gates")
+            st.success(f"Loaded: {scenario['n_flights']} flights, {scenario['n_gates']} gates")
             st.rerun()
         except Exception as e:
             st.error(f"Error: {e}")
@@ -741,13 +741,13 @@ else:
 if 'scenario' in st.session_state:
     scenario = st.session_state['scenario']
     
-    st.sidebar.header("⚙️ Algorithms")
+    st.sidebar.header("Algorithms")
     run_milp = st.sidebar.checkbox("MILP (Optimal)", value=True)
     run_sa = st.sidebar.checkbox("Simulated Annealing (Heuristic)", value=True)
     run_ga = st.sidebar.checkbox("Genetic Algorithm (Heuristic)", value=False)
     run_ts = st.sidebar.checkbox("Tabu Search (Heuristic)", value=False)
     
-    if st.sidebar.button("🚀 Run Optimization", type="primary"):
+    if st.sidebar.button("Run Optimization", type="primary"):
         runtimes = {}
         
         if run_milp:
@@ -800,7 +800,7 @@ if 'scenario' in st.session_state:
     with col4:
         st.metric("Cleaning Time", f"{scenario['t_clean']} min")
     
-    with st.expander("🚪 Gate Configuration"):
+    with st.expander("Gate Configuration"):
         gates_df = pd.DataFrame(scenario['gates'])
         gates_df['capacity_name'] = gates_df['capacity'].map({1:'Small',2:'Medium',3:'Large'})
         col1, col2, col3 = st.columns(3)
@@ -812,7 +812,7 @@ if 'scenario' in st.session_state:
             st.metric("Large Gates", sum(1 for g in scenario['gates'] if g['capacity'] == 3))
         st.dataframe(gates_df[['id', 'capacity_name']])
     
-    with st.expander("📋 Flight Schedule"):
+    with st.expander("Flight Schedule"):
         flights_df = pd.DataFrame(scenario['flights'])
         flights_df['arrival_time'] = flights_df['arrival'].apply(lambda x: f"{x//60:02d}:{x%60:02d}")
         flights_df['departure_time'] = flights_df['departure'].apply(lambda x: f"{x//60:02d}:{x%60:02d}")
@@ -830,7 +830,7 @@ if 'scenario' in st.session_state:
     results_exist = any(key in st.session_state for key in ['milp_result', 'sa_result', 'ga_result', 'ts_result'])
     
     if results_exist:
-        st.subheader("📈 Results Comparison")
+        st.subheader("Results Comparison")
         
         available_results = []
         if 'milp_result' in st.session_state:
@@ -899,7 +899,7 @@ if 'scenario' in st.session_state:
                 })
         st.dataframe(pd.DataFrame(perf_data))
         
-        st.subheader("📅 Gate Assignment Gantt Chart")
+        st.subheader("Gate Assignment Gantt Chart")
         
         algo_options = [name for name, _, _ in available_results]
         algo_option = st.radio("Select Algorithm to Visualize", algo_options, horizontal=True)
@@ -980,7 +980,7 @@ if 'scenario' in st.session_state:
                     })
                 st.dataframe(pd.DataFrame(data))
             
-            st.info("ℹ️ **Note:** Due to gate symmetry (identical gates with same capacity), multiple optimal assignments may exist. All algorithms aim to maximize gate utilization.")
+            st.info("**Note:** Due to gate symmetry (identical gates with same capacity), multiple optimal assignments may exist. All algorithms aim to maximize gate utilization.")
 
 st.markdown("---")
 st.markdown("**AGAP Dashboard** | MILP (PuLP) vs Simulated Annealing vs Genetic Algorithm vs Tabu Search | Generate scenarios or load from CSV")
